@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My HTML Server</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<header>
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="logo">
+                <img src="icon.png" alt="Logo">
+            </div>
+            <h1>Star Tournament...</h1>
+        </div>
+    </nav>
+</header>
+
+<section class="hero">
+    <h2>Fair. Secure. Scalable.</h2>
+    <p>Free Fire Esport platform.</p>
+    <a href="https://github.com/yash0009-0/yash/releases/download/tournament/star_tournament.apk"
+       class="btn-get-started"
+       target="_blank"
+       rel="noopener">
+       Get Started
+    </a>
+</section>
+
+<section class="carousel-wrapper">
+
+    <div class="carousel">
+        <div class="slides">
+    <!-- CLONE: last -->
+    <div class="slide clone">
+        <img src="https://raw.githubusercontent.com/yash0009-0/yash/main/S3.png">
+    </div>
+
+    <!-- REAL SLIDES -->
+    <div class="slide active">
+        <img src="https://raw.githubusercontent.com/yash0009-0/yash/main/S1.png">
+    </div>
+
+    <div class="slide">
+        <img src="https://raw.githubusercontent.com/yash0009-0/yash/main/S2.png">
+    </div>
+
+    <div class="slide">
+        <img src="https://raw.githubusercontent.com/yash0009-0/yash/main/S3.png">
+    </div>
+
+    <!-- CLONE: first -->
+    <div class="slide clone">
+        <img src="https://raw.githubusercontent.com/yash0009-0/yash/main/S1.png">
+    </div>
+
+</div>
+
+    </div>
+
+    <div class="dots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+    </div>
+
+</section>
+
+<section class="hero">
+    <h2>About us.</h2>
+    <p>We Host Esports for different Games. Check Out our application for our Pricing Details.</p>
+    <p>All matches are conducted fairly.Everyone got his reward according to his performance in game.</p>
+    <p>We are improving our app for better performance.</p>
+    <p>there is no point system token system only according to game play.</p> 
+</section>
+
+<section class="hero">
+    <h2>Download Available.</h2>
+    <p>Now play and earn by downloading latest version of star tournament.</p>
+    <a href="https://github.com/yash0009-0/yash/releases/download/tournament/star_tournament.apk"
+       class="btn-get-started"
+       target="_blank"
+       rel="noopener">
+       Download
+    </a>
+</section>
+
+<section class="hero">
+    <h2>Contect us.</h2>
+    <p>contect us on any platform given bellow.</p>
+    <a href="https://t.me/FF_star_tournament"
+       class="btn-get-started"
+       target="_blank"
+       rel="noopener">
+       Telegram
+    </a>
+    <a href="https://www.instagram.com/star_tournament_?igsh=MWVrejV5dWVtcTNxOA=="
+       class="btn-get-started"
+       target="_blank"
+       rel="noopener">
+       Instagram
+    </a>
+    
+</section>
+
+<footer>
+    <p>© 2026 Server</p>
+</footer>
+
+
+<script>
+const track = document.querySelector(".slides");
+const slides = document.querySelectorAll(".slide");
+const realSlides = document.querySelectorAll(".slide:not(.clone)");
+const dots = document.querySelectorAll(".dot");
+const carousel = document.querySelector(".carousel");
+
+let index = 1;                 // first REAL slide
+let slideGap = 30;
+let isAnimating = false;
+
+function updateActive() {
+    slides.forEach(s => s.classList.remove("active"));
+    dots.forEach(d => d.classList.remove("active"));
+
+    // never mark clone as active
+    let realIndex = index;
+    if (slides[index].classList.contains("clone")) {
+        realIndex = index === 0 ? realSlides.length : 1;
+    }
+
+    slides[realIndex].classList.add("active");
+    dots[(realIndex - 1 + realSlides.length) % realSlides.length]
+        .classList.add("active");
+}
+
+function move(animate = true) {
+    const slideWidth = slides[0].offsetWidth + slideGap;
+    const containerWidth = carousel.offsetWidth;
+
+    const offset =
+        (containerWidth - slides[0].offsetWidth) / 2
+        - index * slideWidth;
+
+    track.style.transition = animate
+        ? "transform 0.6s cubic-bezier(0.25,0.8,0.25,1)"
+        : "none";
+
+    track.style.transform = `translateX(${offset}px)`;
+}
+
+function next() {
+    if (isAnimating) return;
+    isAnimating = true;
+    index++;
+    move();
+}
+
+function prev() {
+    if (isAnimating) return;
+    isAnimating = true;
+    index--;
+    move();
+}
+
+/* 🔁 PERFECT LOOP FIX */
+track.addEventListener("transitionend", e => {
+    if (e.propertyName !== "transform") return;
+
+    if (slides[index].classList.contains("clone")) {
+        track.style.transition = "none";
+
+        if (index === 0) index = realSlides.length;
+        if (index === slides.length - 1) index = 1;
+
+        move(false);
+    }
+
+    updateActive();
+    isAnimating = false;
+});
+
+/* DOT CLICK */
+dots.forEach((dot, i) => {
+    dot.addEventListener("click", () => {
+        if (isAnimating) return;
+        index = i + 1;
+        move();
+        updateActive();
+    });
+});
+
+/* TOUCH SWIPE */
+let startX = 0;
+track.addEventListener("touchstart", e => {
+    startX = e.touches[0].clientX;
+});
+
+track.addEventListener("touchend", e => {
+    const endX = e.changedTouches[0].clientX;
+    if (startX - endX > 50) next();
+    else if (endX - startX > 50) prev();
+});
+
+/* INIT */
+window.addEventListener("resize", () => move(false));
+move(false);
+updateActive();
+</script>
+
+
+</body>
+</html>
+
